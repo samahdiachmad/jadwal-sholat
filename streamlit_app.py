@@ -6,7 +6,7 @@ import time
 import base64, os
 
 st.set_page_config(
-    page_title="Jadwal Sholat · Masjid Al Irsyad",
+    page_title="Jadwal Sholat · AL-AZHAR SYIFA BUDI TALAGA BESTARI",
     page_icon="🕌",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -254,7 +254,7 @@ html = (
 
     "<div class='topbar'>"
     "<div class='tl'><span class='ti'>🕌</span>"
-    "<div><div class='tt'>MASJID AL IRSYAD</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
+    "<div><div class='tt'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
     "</div>"
     "<div style='text-align:right'>"
     "<div class='tc' id='clk'>" + clock_str + "</div>"
@@ -267,13 +267,13 @@ html = (
     "<div class='ib'>"
     "<img src='" + img_src + "' alt='Masjid Al Irsyad'>"
     "<div class='io'></div>"
-    "<div class='ilbl'>Masjid Al Irsyad · Parahyangan</div>"
+    "<div class='ilbl'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI · CIKUPA</div>"
     "</div>"
     "<div class='cb'>"
     "<div class='cl'>Menuju adzan berikutnya</div>"
     "<div class='ct2' id='cdt'>" + hh + " : " + mm + " : " + ss + "</div>"
     "<div class='cn2'>⟶  Menuju " + nama_b + "  (" + jam_b + ")</div>"
-    "<div class='br'>by Ardumeka · aladhan.com</div>"
+    "<div class='br'>by ASBTB · ASBATB.com</div>"
     "</div></div>"
 
     "<div class='rp'>" + cards_html + "</div>"
