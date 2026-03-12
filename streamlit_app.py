@@ -14,14 +14,48 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-#MainMenu,header,footer,
+/* Sembunyikan semua elemen bawaan Streamlit */
+#MainMenu, header, footer,
 [data-testid="stToolbar"],
 [data-testid="stDecoration"],
 [data-testid="stStatusWidget"],
+[data-testid="stHeader"],
+[data-testid="stBottom"],
+[data-testid="stFullScreenFrame"],
 .stDeployButton,
-[data-testid="collapsedControl"]{display:none!important;}
-.block-container{padding:0!important;margin:0!important;max-width:100%!important;}
-html,body,[class*="css"]{overflow:hidden!important;background:#0b1a2e!important;}
+[data-testid="collapsedControl"] { display:none !important; }
+
+/* Hapus semua padding dan background putih */
+.block-container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    background: transparent !important;
+}
+.appview-container, .main {
+    background: #0b1a2e !important;
+    padding: 0 !important;
+}
+html, body, [class*="css"] {
+    overflow: hidden !important;
+    background: #0b1a2e !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Hapus background putih di semua wrapper div */
+.element-container, .stMarkdown, section.main > div {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Iframe tanpa border dan background */
+iframe {
+    border: none !important;
+    display: block !important;
+    background: #0b1a2e !important;
+}
 </style>""", unsafe_allow_html=True)
 
 # ── Fetch jadwal Kabupaten Tangerang ──────────────────────────────
@@ -214,7 +248,7 @@ html = (
 
     "<div class='topbar'>"
     "<div class='tl'><span class='ti'>🕌</span>"
-    "<div><div class='tt'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
+    "<div><div class='tt'>AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
     "</div>"
     "<div style='text-align:right'>"
     "<div class='tc' id='clk'>" + clock_str + "</div>"
@@ -233,7 +267,7 @@ html = (
     "<div class='cl'>Menuju adzan berikutnya</div>"
     "<div class='ct2' id='cdt'>" + hh + " : " + mm + " : " + ss + "</div>"
     "<div class='cn2'>⟶  Menuju " + nama_b + "  (" + jam_b + ")</div>"
-    "<div class='br'>by ASBATARI · ASBTB.com</div>"
+    "<div class='br'>by ASBTB · ASBTB.com</div>"
     "</div></div>"
 
     "<div class='rp'>" + cards_html + "</div>"
@@ -247,7 +281,18 @@ html = (
     "</body></html>"
 )
 
-components.html(html, height=720, scrolling=False)
+# Inject CSS tambahan untuk hapus margin di luar iframe
+st.markdown("""
+<style>
+div[data-testid="stComponentsContainer"] > div,
+div[data-testid="stComponentsContainer"] {
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 0 !important;
+}
+</style>""", unsafe_allow_html=True)
+
+components.html(html, height=780, scrolling=False)
 
 time.sleep(60)
 st.rerun()
