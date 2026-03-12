@@ -254,7 +254,7 @@ html = (
 
     "<div class='topbar'>"
     "<div class='tl'><span class='ti'>🕌</span>"
-    "<div><div class='tt'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
+    "<div><div class='tt'>AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
     "</div>"
     "<div style='text-align:right'>"
     "<div class='tc' id='clk'>" + clock_str + "</div>"
