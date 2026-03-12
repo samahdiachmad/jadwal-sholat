@@ -2,11 +2,15 @@ import streamlit as st
 import streamlit.components.v1 as components
 import requests
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import time
 import base64, os
 
+# Timezone WIB (UTC+7)
+WIB = ZoneInfo("Asia/Jakarta")
+
 st.set_page_config(
-    page_title="Jadwal Sholat · SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI",
+    page_title="Jadwal Sholat · AL-AZHAR SYIFA BUDI TALAGA BESTARI",
     page_icon="🕌",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -79,13 +83,16 @@ def fetch_jadwal():
         return {}
 
 def waktu_berikutnya(jadwal):
-    now = datetime.now()
+    # Selalu gunakan waktu WIB (UTC+7) agar benar di server manapun
+    now = datetime.now(WIB)
     lst = []
     for nama, jam_str in jadwal.items():
         try:
-            w = datetime.strptime(jam_str, "%H:%M").replace(
-                year=now.year, month=now.month, day=now.day)
-            if w < now:
+            # Parse jam dari API, gabungkan dengan tanggal hari ini WIB
+            h, m = map(int, jam_str.split(":"))
+            w = now.replace(hour=h, minute=m, second=0, microsecond=0)
+            # Jika waktu sudah lewat hari ini, geser ke besok
+            if w <= now:
                 w += timedelta(days=1)
             lst.append((nama, w))
         except:
@@ -104,7 +111,7 @@ def img_b64(path):
 
 # ── Data ──────────────────────────────────────────────────────────
 jadwal              = fetch_jadwal()
-now                 = datetime.now()
+now                 = datetime.now(WIB)  # Waktu WIB
 nama_b, jam_b, h, m, s = waktu_berikutnya(jadwal)
 img_src             = img_b64("Masjid_Al_Irsyad.jpeg")
 
@@ -248,7 +255,7 @@ html = (
 
     "<div class='topbar'>"
     "<div class='tl'><span class='ti'>🕌</span>"
-    "<div><div class='tt'>AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
+    "<div><div class='tt'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
     "</div>"
     "<div style='text-align:right'>"
     "<div class='tc' id='clk'>" + clock_str + "</div>"
@@ -261,7 +268,7 @@ html = (
     "<div class='ib'>"
     "<img src='" + img_src + "' alt='Masjid Al Irsyad'>"
     "<div class='io'></div>"
-    "<div class='ilbl'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI · KAB. TANGERANG</div>"
+    "<div class='ilbl'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI · CIKUPA</div>"
     "</div>"
     "<div class='cb'>"
     "<div class='cl'>Menuju adzan berikutnya</div>"
