@@ -2,15 +2,11 @@ import streamlit as st
 import streamlit.components.v1 as components
 import requests
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 import time
 import base64, os
 
-# Timezone WIB (UTC+7)
-WIB = ZoneInfo("Asia/Jakarta")
-
 st.set_page_config(
-    page_title="Jadwal Sholat · AL-AZHAR SYIFA BUDI TALAGA BESTARI",
+    page_title="Jadwal Sholat · Masjid Al Irsyad",
     page_icon="🕌",
     layout="wide",
     initial_sidebar_state="collapsed",
@@ -83,16 +79,18 @@ def fetch_jadwal():
         return {}
 
 def waktu_berikutnya(jadwal):
-    # Selalu gunakan waktu WIB (UTC+7) agar benar di server manapun
-    now = datetime.now(WIB)
+    # Gunakan UTC+7 manual agar benar di server Streamlit Cloud (UTC)
+    from datetime import timezone
+    now_utc = datetime.now(timezone.utc)
+    now = now_utc.astimezone(timezone(timedelta(hours=7)))
+    now_naive = now.replace(tzinfo=None)
+
     lst = []
     for nama, jam_str in jadwal.items():
         try:
-            # Parse jam dari API, gabungkan dengan tanggal hari ini WIB
             h, m = map(int, jam_str.split(":"))
-            w = now.replace(hour=h, minute=m, second=0, microsecond=0)
-            # Jika waktu sudah lewat hari ini, geser ke besok
-            if w <= now:
+            w = now_naive.replace(hour=h, minute=m, second=0, microsecond=0)
+            if w <= now_naive:
                 w += timedelta(days=1)
             lst.append((nama, w))
         except:
@@ -100,7 +98,7 @@ def waktu_berikutnya(jadwal):
     if not lst:
         return "─", "─", 0, 0, 0
     nama, w = min(lst, key=lambda x: x[1])
-    sec = int((w - now).total_seconds())
+    sec = int((w - now_naive).total_seconds())
     return nama, w.strftime("%H:%M"), sec // 3600, (sec % 3600) // 60, sec % 60
 
 def img_b64(path):
@@ -111,7 +109,8 @@ def img_b64(path):
 
 # ── Data ──────────────────────────────────────────────────────────
 jadwal              = fetch_jadwal()
-now                 = datetime.now(WIB)  # Waktu WIB
+from datetime import timezone as _tz
+now = datetime.now(_tz.utc).astimezone(_tz(timedelta(hours=7))).replace(tzinfo=None)
 nama_b, jam_b, h, m, s = waktu_berikutnya(jadwal)
 img_src             = img_b64("Masjid_Al_Irsyad.jpeg")
 
@@ -255,7 +254,7 @@ html = (
 
     "<div class='topbar'>"
     "<div class='tl'><span class='ti'>🕌</span>"
-    "<div><div class='tt'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
+    "<div><div class='tt'>MASJID AL IRSYAD</div><div class='ts'>Kab. Tangerang · Banten, Indonesia</div></div>"
     "</div>"
     "<div style='text-align:right'>"
     "<div class='tc' id='clk'>" + clock_str + "</div>"
@@ -268,13 +267,13 @@ html = (
     "<div class='ib'>"
     "<img src='" + img_src + "' alt='Masjid Al Irsyad'>"
     "<div class='io'></div>"
-    "<div class='ilbl'>SEKOLAH AL-AZHAR SYIFA BUDI TALAGA BESTARI · CIKUPA</div>"
+    "<div class='ilbl'>Masjid Al Irsyad · Parahyangan</div>"
     "</div>"
     "<div class='cb'>"
     "<div class='cl'>Menuju adzan berikutnya</div>"
     "<div class='ct2' id='cdt'>" + hh + " : " + mm + " : " + ss + "</div>"
     "<div class='cn2'>⟶  Menuju " + nama_b + "  (" + jam_b + ")</div>"
-    "<div class='br'>by ASBTB · ASBTB.com</div>"
+    "<div class='br'>by Ardumeka · aladhan.com</div>"
     "</div></div>"
 
     "<div class='rp'>" + cards_html + "</div>"
